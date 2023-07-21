@@ -1,3 +1,5 @@
+import logging
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
@@ -9,15 +11,17 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 
-def browser_init(context):
+
+
+def browser_init(context, test_name):
     """
     :param context: Behave context
     """
 
     ######## GOOGLE CHROME #######################
-    driver_path = ChromeDriverManager().install()
-    service = ChromeService(driver_path)
-    context.driver = webdriver.Chrome(service=service)
+    # driver_path = ChromeDriverManager().install()
+    # service = ChromeService(driver_path)
+    # context.driver = webdriver.Chrome(service=service)
     ####################################################
 
     ######### FIREFOX ##############
@@ -34,6 +38,21 @@ def browser_init(context):
     # context.driver = webdriver.Chrome(service=service, options=options)
     ##################################################
 
+    ########BROWSERSTACK############
+    desired_cap = DesiredCapabilities.CHROME.copy()
+    #desired_cap = {
+    #    'browser': 'Chrome',
+    #    'os_version': '11',
+    #    'os': 'Windows',
+    #    'name': test_name
+    #}
+
+    bs_user = 'syedahmed_Sqh8ir'
+    bs_key = '6GnpHaXrpW1xwNhBpTNY'
+    url = f'http://{bs_user}:{bs_key}@hub-cloud.browserstack.com/wd/hub'
+    context.driver = webdriver.Remote(url, options=ChromeOptions())
+    #########################################################################
+
     context.driver.maximize_window()
     context.driver.implicitly_wait(4)
     context.app = Application(context.driver)
@@ -41,7 +60,8 @@ def browser_init(context):
 
 def before_scenario(context, scenario):
     print('\nStarted scenario: ', scenario.name)
-    browser_init(context)
+    logging.info(f'Started scenario: {scenario.name}')
+    browser_init(context, scenario.name)
 
 
 def before_step(context, step):
