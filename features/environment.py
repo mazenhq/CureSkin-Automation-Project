@@ -12,6 +12,15 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 
 
+####Allure command:####
+# To generate JSON
+#behave -f allure_behave.formatter:AllureFormatter -o .\Mazen_results\ .\features\tests\Cure_search.feature
+
+# To generate Allure Report
+# allure serve <path to folder that has JSON results>
+
+
+
 
 def browser_init(context, test_name):
     """
